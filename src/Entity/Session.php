@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity()
  */
-class Formation implements JsonSerializable
+class Session implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -27,18 +27,11 @@ class Formation implements JsonSerializable
     /**
      * @ORM\Column(type="integer")
      */
-    private $certification;
+    private $formation;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -53,14 +46,14 @@ class Formation implements JsonSerializable
         return $this;
     }
 
-    public function getCertification()
+    public function getFormation()
     {
-        return $this->certification;
+        return $this->formation;
     }
 
-    public function setCertification($certification)
+    public function setFormation($formation)
     {
-        $this->certification = $certification;
+        $this->formation = $formation;
 
         return $this;
     }

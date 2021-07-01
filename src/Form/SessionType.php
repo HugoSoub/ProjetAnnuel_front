@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Formation;
+use App\Entity\Session;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class FormationType extends AbstractType
+class SessionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -18,9 +18,9 @@ class FormationType extends AbstractType
                 'label' => 'Nom',
                 'required' => false,
             ])
-            ->add('certification', ChoiceType::class, [
-                'label' => 'Certifications',
-                'choices' => $options['certifications'],
+            ->add('formation', ChoiceType::class, [
+                'label' => 'Formations',
+                'choices' => $options['formations'],
                 'choice_label' => 'name',
                 'required' => false,
             ])
@@ -30,8 +30,8 @@ class FormationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Formation::class,
-            'certifications' => []
+            'data_class' => Session::class,
+            'formations' => []
         ]);
     }
 }

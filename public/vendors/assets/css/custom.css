@@ -29,3 +29,22 @@
 .datetimepicker.dropdown-menu {
     z-index: 2147483647 !important;
 }
+
+.formations {
+    background-color: #4680ff !important;
+    color: #fff !important;
+    border-color: #4680ff !important;
+}
+
+.certifications {
+    background-color: #93BE52 !important;
+    color: #fff !important;
+    border-color: #93BE52 !important;
+}
+
+.formation-selected {
+    cursor: auto !important;
+    color: #fff !important;
+    background-color: #81a9ff !important;
+    border-color: #81a9ff !important;
+}

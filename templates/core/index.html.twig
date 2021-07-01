@@ -14,26 +14,33 @@
         </div>
         <div class="card-block">
             <div class="row">
-                {# <div class="col-xl-2 col-md-12">
-                    <div id="external-events">
-                        <h6 class="m-b-30 m-t-20">Events</h6>
-                        <div class="fc-event ui-draggable ui-draggable-handle">My Event 1</div>
-                        <div class="fc-event ui-draggable ui-draggable-handle">My Event 2</div>
-                        <div class="fc-event ui-draggable ui-draggable-handle">My Event 3</div>
-                        <div class="fc-event ui-draggable ui-draggable-handle">My Event 4</div>
-                        <div class="fc-event ui-draggable ui-draggable-handle">My Event 5</div>
-                        <div class="checkbox-fade fade-in-primary m-t-10">
-                            <label>
-                                <input type="checkbox" value="">
-                                <span class="cr">
-                                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-                                </span>
-                                <span>Remove After Drop</span>
-                            </label>
+                <div class="col-md-4">
+                    <h6 class="m-b-30 m-t-20">Sessions en cours</h6>
+                    {% for session in sessions %}
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ session.name }}</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="external-events">
+                                    {% for session_formation in session.formations %}
+                                        {% if session_formation.id_formation | length %}
+                                            <div class="row js-events">
+                                                <div class="col-md-8">
+                                                    <div data-id="{{ session_formation.id }}" class="fc-event {% if session_formation.date == null %}formations{% else %}formation-selected{% endif %} ui-draggable ui-draggable-handle">{{ session_formation.id_formation.0.name }}</div>
+                                                </div>
+                                                <div class="col-md-4 js-events-date">
+                                                    {% if session_formation.date != null %}{{ session_formation.date | date("d/m/Y") }}{% else %}Non attribué{% endif %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div> #}
-                <div class="col-md-12">
+                    {% endfor %}
+                </div>
+                <div class="col-md-8">
                     <div id='calendar'></div>
                 </div>
             </div>

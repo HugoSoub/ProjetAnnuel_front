@@ -25,6 +25,12 @@
 		</ul>
 		<div class="pcoded-navigatio-lavel">Sessions</div>
 		<ul class="pcoded-item pcoded-left-item">
+			<li class="{% if 'SessionController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('session') }}">
+					<span class="pcoded-micon"><i class="fa fa-graduation-cap"></i></span>
+					<span class="pcoded-mtext">Sessions</span>
+				</a>
+			</li>
 			<li class="{% if 'FormationController' in app.request.attributes.get('_controller') %}active{% endif %}">
 				<a href="{{ path('formation') }}">
 					<span class="pcoded-micon"><i class="fa fa-graduation-cap"></i></span>

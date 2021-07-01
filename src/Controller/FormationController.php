@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Certification;
 use App\Entity\Formation;
 use App\Form\FormationType;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,7 @@ class FormationController extends AbstractController
      */
     public function list(): Response
     {
-        $response = $this->client->request('GET', $this->getParameter('api_url') . 'todos');
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'formations');
 
         $formations = $errors = [];
         if ($response->getStatusCode() == 200) {
@@ -36,21 +37,60 @@ class FormationController extends AbstractController
     }
 
     /**
-     * @Route("/formation/add", name="formation_add", options={"expose"=true}, methods={"POST"})
+     * @Route("/formation/add", name="formation_add")
      */
-    public function addEvent(Request $request)
+    public function addFormation(Request $request)
     {
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'certifications');
+
+        $certifications = [];
+        if ($response->getStatusCode() == 200) {
+            foreach ($response->toArray() as $object) {
+                $certification = new Certification();
+                $certification->setId($object['id'])
+                              ->setName($object['name'])
+                              ->setDescription($object['description']);
+                $certifications[] = $certification;
+            }
+        }
+
         $formation = new Formation();
-        $form = $this->createForm(FormationType::class, $formation);
+        $form = $this->createForm(FormationType::class, $formation, ['certifications' => $certifications]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // $response = $this->client->request('POST', $this->getParameter('api_url') . 'todos', [
-    
-            // ]);
-            return new JsonResponse($formation, 200);
+            $response = $this->client->request('POST', $this->getParameter('api_url') . 'formations', [
+                'json' => [
+                    'name' => $formation->getName(),
+                    'id_certification' => $formation->getCertification()->getId()
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return $this->redirectToRoute('formation');
+            }
         }
 
-        return $this->render('calendar/event.add.html.twig', [ 'form' => $form->createView() ]);
+        return $this->render('formation/add.html.twig', [ 'form' => $form->createView() ]);
     }
+
+    // /**
+    //  * @Route("/formation/add", name="formation_add", options={"expose"=true}, methods={"POST"})
+    //  */
+    // public function addEvent(Request $request)
+    // {
+    //     $formation = new Formation();
+    //     $form = $this->createForm(FormationType::class, $formation);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $response = $this->client->request('POST', $this->getParameter('api_url') . 'formations', [
+    //             'json' => ['name' => $formation->getName()]
+    //         ]);
+    //         if ($response->getStatusCode() == 200) {
+    //             return new JsonResponse($formation, 200);
+    //         }
+    //     }
+
+    //     return $this->render('calendar/event.add.html.twig', [ 'form' => $form->createView() ]);
+    // }
 }

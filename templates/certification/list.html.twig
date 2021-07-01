@@ -30,7 +30,7 @@
     <div class="card">
         <div class="card-header">
             <h5><i class="fa fa-certificate"></i> Liste des Certifications</h5>
-            <a href="{# {{ path('certification_new') }} #}" class="btn btn-mat btn-primary f-right"> <i class="fa fa-plus"></i> Ajouter</a>
+            <a href="{{ path('certification_add') }}" class="btn btn-mat btn-primary f-right"> <i class="fa fa-plus"></i> Ajouter</a>
         </div>
         <div class="card-block table-border-style">
             <div class="table-responsive">
@@ -38,8 +38,8 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Titre</th>
-                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Description</th>
                             <th style="width:5%">Actions</th>
                         </tr>
                     </thead>
@@ -47,9 +47,8 @@
                     {% for certification in certifications %}
                         <tr>
                             <td>{{ certification.id }}</td>
-                            <td>{{ certification.title }}</td>
-                            <td>{{ certification.title }}</td>
-                            {# <td>{{ certification.date }}</td> #}
+                            <td>{{ certification.name }}</td>
+                            <td>{{ certification.description }}</td>
                             <td class="icon-btn">
                                 {% if certification.enabled is defined %}
                                     <a href="{# {{ path('certification_toggle', {'id': certification.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Désactiver" class="btn btn-info btn-mat btn-mini"><i class="fa fa-toggle-on"></i></a>
