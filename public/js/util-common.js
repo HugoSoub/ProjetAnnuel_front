@@ -24,3 +24,29 @@ $('body').on('click', '.util-confirm-link, a[data-toggle="confirm"]', function(e
         }
     });
 });
+
+$('body').on('click', '.js-add-user-session', function() {
+    session_id = $(this).data('id');
+    $.get(Routing.generate('user_all'), function(result) {
+		users = result;
+
+        Swal.fire({
+            title: "Ajouter un nouveau candidat",
+            input: 'select',
+            inputPlaceholder: 'Sélectionnez un candidat',
+            inputOptions: users,
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+					type: 'POST',
+					url: Routing.generate('session_user_add', { 'session_id': session_id, 'user_id': result.value }),
+					success: function(result) {}
+				});
+            }
+        });
+    });
+})

@@ -73,6 +73,16 @@ class FormationController extends AbstractController
         return $this->render('formation/add.html.twig', [ 'form' => $form->createView() ]);
     }
 
+    /**
+     * @Route("/formation/{id}/remove", name="formation_remove")
+     */
+    public function removeFormation($id)
+    {
+        $response = $this->client->request('DELETE', $this->getParameter('api_url') . 'formations/' . $id);
+
+        return $this->redirectToRoute('formation');
+    }
+
     // /**
     //  * @Route("/formation/add", name="formation_add", options={"expose"=true}, methods={"POST"})
     //  */

@@ -30,7 +30,7 @@
     <div class="card">
         <div class="card-header">
             <h5><i class="feather icon-users"></i> Liste des Utilisateurs</h5>
-            <a href="{# {{ path('user_new') }} #}" class="btn btn-mat btn-primary f-right"> <i class="fa fa-plus"></i> Ajouter</a>
+            <a href="{{ path('user_add') }}" class="btn btn-mat btn-primary f-right"> <i class="fa fa-plus"></i> Ajouter</a>
         </div>
         <div class="card-block table-border-style">
             <div class="table-responsive">
@@ -38,8 +38,10 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Prénom / Nom</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
                             <th>Email</th>
+                            <th>Roles</th>
                             <th style="width:5%">Actions</th>
                         </tr>
                     </thead>
@@ -48,13 +50,15 @@
                         <tr>
                             <td>{{ user.id }}</td>
                             <td>{{ user.name }}</td>
+                            <td>{{ user.firstname }}</td>
                             <td>{{ user.email }}</td>
+                            <td>
+                                {% for role in user.roles %}
+                                    {% if loop.index0 != 0 %}, {% endif %}{{ role }}
+                                {% endfor %}
+                            </td>
                             <td class="icon-btn">
-                                {% if user.enabled is defined %}
-                                    <a href="{# {{ path('user_toggle', {'id': user.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Désactiver" class="btn btn-info btn-mat btn-mini"><i class="fa fa-toggle-on"></i></a>
-                                {% else %}
-                                    <a href="{# {{ path('user_toggle', {'id': user.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Activer" class="btn btn-warning btn-mat btn-mini"><i class="fa fa-toggle-off"></i></a>
-                                {% endif %}
+                                <a href="{{ path('user_remove', {'id': user.id}) }}" data-toggle="tooltip" data-placement="top" title="Supprimer" class="btn btn-danger btn-mat btn-mini"><i class="icofont icofont-ui-delete"></i></a>
                                 <a href="{# {{ path('user_edit', {'id': user.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Éditer" class="btn btn-primary btn-mat btn-mini"><i class="icofont icofont-ui-edit"></i></a>
                             </td>
                         </tr>

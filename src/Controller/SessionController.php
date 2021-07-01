@@ -75,6 +75,16 @@ class SessionController extends AbstractController
     }
 
     /**
+     * @Route("/session/{id}/remove", name="session_remove")
+     */
+    public function removeSession($id)
+    {
+        $response = $this->client->request('DELETE', $this->getParameter('api_url') . 'sessions/' . $id);
+
+        return $this->redirectToRoute('session');
+    }
+
+    /**
      * @Route("/session/formation/edit/{id}", name="session_formation_edit", options={"expose"=true}, methods={"PUT"})
      */
     public function editSessionFormation(Request $request, $id)
@@ -83,6 +93,21 @@ class SessionController extends AbstractController
 
         $response = $this->client->request('PUT', $this->getParameter('api_url') . 'session_formations/' . $id, [
             'json' => array_merge($session_formations[0], $request->request->all())
+        ]);
+
+        return new JsonResponse('', 200);
+    }
+
+    /**
+     * @Route("/session/{session_id}/user/{user_id}/add/", name="session_user_add", options={"expose"=true}, methods={"POST"})
+     */
+    public function addUserSession($session_id, $user_id)
+    {
+        $response = $this->client->request('POST', $this->getParameter('api_url') . 'user_sessions', [
+            'json' => [
+                'id_user' => $user_id,
+                'id_session' => $session_id
+            ]
         ]);
 
         return new JsonResponse('', 200);

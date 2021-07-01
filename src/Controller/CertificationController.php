@@ -57,4 +57,14 @@ class CertificationController extends AbstractController
 
         return $this->render('certification/add.html.twig', [ 'form' => $form->createView() ]);
     }
+
+    /**
+     * @Route("/certification/{id}/remove", name="certification_remove")
+     */
+    public function removeCertification($id)
+    {
+        $response = $this->client->request('DELETE', $this->getParameter('api_url') . 'certifications/' . $id);
+
+        return $this->redirectToRoute('certification');
+    }
 }

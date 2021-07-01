@@ -6,7 +6,8 @@ jQuery(function ($) {
 			stick: true,
 			borderColor: $(this).css("border-color"),
 			backgroundColor: $(this).css("background-color"),
-			textColor: $(this).css("color")
+			textColor: $(this).css("color"),
+			id: $(this).data('id')
 		});
 
 		$(this).draggable({
@@ -26,7 +27,7 @@ jQuery(function ($) {
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				right: 'month,agendaWeek,listMonth'
+				right: 'month,listMonth'
 			},
 			locale: 'fr',
 			navLinks: true,

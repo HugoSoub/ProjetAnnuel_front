@@ -50,11 +50,7 @@
                             <td>{{ certification.name }}</td>
                             <td>{{ certification.description }}</td>
                             <td class="icon-btn">
-                                {% if certification.enabled is defined %}
-                                    <a href="{# {{ path('certification_toggle', {'id': certification.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Désactiver" class="btn btn-info btn-mat btn-mini"><i class="fa fa-toggle-on"></i></a>
-                                {% else %}
-                                    <a href="{# {{ path('certification_toggle', {'id': certification.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Activer" class="btn btn-warning btn-mat btn-mini"><i class="fa fa-toggle-off"></i></a>
-                                {% endif %}
+                                <a href="{{ path('certification_remove', {'id': certification.id}) }}" data-toggle="tooltip" data-placement="top" title="Supprimer" class="btn btn-danger btn-mat btn-mini"><i class="icofont icofont-ui-delete"></i></a>
                                 <a href="{# {{ path('certification_edit', {'id': certification.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Éditer" class="btn btn-primary btn-mat btn-mini"><i class="icofont icofont-ui-edit"></i></a>
                             </td>
                         </tr>

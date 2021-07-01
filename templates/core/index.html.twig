@@ -4,22 +4,18 @@
 
 {% block body %}
     <div class="card">
-        <div class="card-header">
-            <h5></h5>
-            <div class="card-header-right">
-                <ul class="list-unstyled card-option">
-                    <li><i class="feather icon-maximize full-card"></i></li>
-                </ul>
-            </div>
-        </div>
         <div class="card-block">
             <div class="row">
                 <div class="col-md-4">
-                    <h6 class="m-b-30 m-t-20">Sessions en cours</h6>
+                    <div class="row">
+                        <h4 class="m-b-30 m-t-20 m-l-10">Sessions en cours</h4>
+                    </div>
                     {% for session in sessions %}
                         <div class="card">
                             <div class="card-header">
                                 <h5>{{ session.name }}</h5>
+                                <button data-id="{{ session.id }}"class="btn btn-mat btn-primary btn-mini f-right js-add-user-session"> <i class="fa fa-plus"></i> Ajouter un candidat</button>
+                                <span>{{ session.users | length }} / 30 participant(s)</span>
                             </div>
                             <div class="card-block">
                                 <div id="external-events">
