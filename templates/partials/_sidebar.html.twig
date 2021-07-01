@@ -1,0 +1,42 @@
+<nav class="pcoded-navbar">
+	<div class="pcoded-inner-navbar main-menu">
+		<ul class="pcoded-item pcoded-left-item">
+			<li class="{% if 'CoreController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('index') }}">
+					<span class="pcoded-micon"><i class="feather icon-home"></i></span>
+					<span class="pcoded-mtext">Tableau de bord</span>
+				</a>
+			</li>
+			<li class="{% if 'UserController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('user') }}">
+					<span class="pcoded-micon"><i class="feather icon-users"></i></span>
+					<span class="pcoded-mtext">Utilisateurs</span>
+				</a>
+			</li>
+		</ul>
+		<div class="pcoded-navigatio-lavel">Entretiens</div>
+		<ul class="pcoded-item pcoded-left-item">
+			<li class="{% if 'InterviewController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('interview') }}">
+					<span class="pcoded-micon"><i class="fa fa-commenting-o"></i></span>
+					<span class="pcoded-mtext">Entretiens</span>
+				</a>
+			</li>
+		</ul>
+		<div class="pcoded-navigatio-lavel">Sessions</div>
+		<ul class="pcoded-item pcoded-left-item">
+			<li class="{% if 'FormationController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('formation') }}">
+					<span class="pcoded-micon"><i class="fa fa-graduation-cap"></i></span>
+					<span class="pcoded-mtext">Formations</span>
+				</a>
+			</li>
+			<li class="{% if 'CertificationController' in app.request.attributes.get('_controller') %}active{% endif %}">
+				<a href="{{ path('certification') }}">
+					<span class="pcoded-micon"><i class="fa fa-certificate"></i></span>
+					<span class="pcoded-mtext">Certifications</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</nav>

@@ -1,0 +1,539 @@
+{% use "form_div_layout.html.twig" %}
+
+{# Widgets #}
+{% block form_widget_simple -%}
+    {% if type is not defined or type not in ['file', 'hidden'] %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+        {% if attr.autocomplete is not defined %}
+            {%- set attr = attr|merge({autocomplete: (attr.autocomplete|default('') ~ 'off')|trim}) -%}
+        {% endif %}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{%- block choice_widget_collapsed -%}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
+        {% set required = false %}
+    {%- endif -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {%- if placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+{%- endblock choice_widget_collapsed -%}
+
+{% block textarea_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{%- endblock textarea_widget %}
+
+{% block button_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('btn-default') ~ ' btn')|trim}) %}
+    {{- parent() -}}
+{%- endblock %}
+
+{% block money_widget -%}
+    <div class="input-group">
+        {% set append = money_pattern starts with '{{' %}
+        {% set currency = money_pattern ends with '}}' %}
+        {% if not append %}
+            <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
+        {% endif %}
+        {{- block('form_widget_simple') -}}
+        {% if append %}
+            {% if not currency %}
+                <span class="input-group-addon">{{ money_pattern|replace({ '{{ widget }}':''}) }}</span>
+            {% endif %}
+        {% endif %}
+    </div>
+{%- endblock money_widget %}
+
+{% block percent_widget -%}
+    <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <span class="input-group-addon">%</span>
+    </div>
+{%- endblock percent_widget %}
+
+{% block datetime_widget %}
+{# {% spaceless %} #}
+    {% if widget == 'single_text' %}
+        {% set type = type|default('text') %}
+        <div class="input-group form_datetime input-prepend date util-datetimepicker" {{ attribute(attr, 'data-sync') is defined ? 'data-sync=' ~ attribute(attr, 'data-sync') : '' }}>
+            <span class="add-on input-group-addon"><i class="fa fa-calendar icon-th"></i></span>
+            <input type="text" class="form-control" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        </div>
+    {% else %}
+        {% if roles is not defined %}
+            {% set roles = {} %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="has-float-label">
+                        <label><small>Date</small></label>
+                        {{ form_widget(form.date, { roles : roles }) }}
+                        {{ form_errors(form.date, { roles : roles }) }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="has-float-label">
+                        <label><small>Heure</small></label>
+                        {{ form_errors(form.time, { roles : roles }) }}
+                        {{ form_widget(form.time, { roles : roles }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{# {% endspaceless %} #}
+{% endblock datetime_widget %}
+
+{% block date_widget %}
+{# {% spaceless %} #}
+    {% if widget == 'single_text' %}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+        {% if 'util-datepicker-without-icon' in attr.class %}
+            {% set attr = attr|merge({class: (attr.class|default('') ~ ' util-datepicker')|trim}) -%}
+            <input type="text" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        {% else %}
+            <div class="input-group form_date input-prepend date util-datepicker">
+                <span class="add-on input-group-addon"><i class="fa fa-calendar icon-th"></i></span>
+                <input type="text" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if roles is not defined %}
+            {% set roles = {} %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+             <div class="input-group">
+                {{ form_widget(form.year, { roles : roles, attr : { placeholder : '0000', 'autocomplete' : 'off'} }) }}
+                <span class="input-group-btn" style="width:0px;"></span>
+                {{ form_widget(form.month, { roles : roles, attr : { placeholder : '00', 'autocomplete' : 'off', style : 'margin-left:-1px'} }) }}
+                <span class="input-group-btn" style="width:0px;"></span>
+                {{ form_widget(form.day, { roles : roles, attr : { placeholder : '00', 'autocomplete' : 'off', style : 'margin-left:-2px'} }) }}
+            </div>
+        </div>
+    {% endif %}
+{# {% endspaceless %} #}
+{% endblock date_widget %}
+
+{% block time_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        {% if datetime is not defined or false == datetime -%}
+            <div {{ block('widget_container_attributes') -}}>
+        {%- endif -%}
+        {{- form_widget(form.hour, { attr : { style : 'max-width: 100px' } }) }}{% if with_minutes %}:{{ form_widget(form.minute, { attr : { style : 'max-width: 100px' } }) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second) }}{% endif %}
+        {% if datetime is not defined or false == datetime -%}
+            </div>
+        {%- endif -%}
+    {% endif %}
+{%- endblock time_widget %}
+
+{%- block dateinterval_widget -%}
+    {%- if widget == 'single_text' -%}
+        {{- block('form_widget_simple') -}}
+    {%- else -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        <div {{ block('widget_container_attributes') }}>
+            {{- form_errors(form) -}}
+            {%- if with_years %}{{ form_widget(form.years) }}{% endif -%}
+            {%- if with_months %}{{ form_widget(form.months) }}{% endif -%}
+            {%- if with_weeks %}{{ form_widget(form.weeks) }}{% endif -%}
+            {%- if with_days %}{{ form_widget(form.days) }}{% endif -%}
+            {%- if with_hours %}{{ form_widget(form.hours) }}{% endif -%}
+            {%- if with_minutes %}{{ form_widget(form.minutes) }}{% endif -%}
+            {%- if with_seconds %}{{ form_widget(form.seconds) }}{% endif -%}
+            {%- if with_invert %}{{ form_widget(form.invert) }}{% endif -%}
+        </div>
+    {%- endif -%}
+{%- endblock dateinterval_widget -%}
+
+{% block checkbox_widget -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {% if 'checkbox-inline' in parent_label_class %}
+        {{- form_label(form, null, { widget: parent() }) -}}
+    {% elseif not form.vars.label %}
+        {{ parent() | raw }}
+    {% else -%}
+        <div class="checkbox">
+            {{- form_label(form, null, { widget: parent() }) -}}
+        </div>
+    {%- endif %}
+{%- endblock checkbox_widget %}
+
+{% block radio_widget -%}
+    {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+    {% if 'radio-inline' in parent_label_class %}
+        {{- form_label(form, null, { widget: parent() }) -}}
+    {% else -%}
+        <div class="radio">
+            {{- form_label(form, null, { widget: parent() }) -}}
+        </div>
+    {%- endif %}
+{%- endblock radio_widget %}
+
+
+{%- block form_label -%}
+{% if label is not same as(false) -%}
+    {% if not compound -%}
+        {% set label_attr = label_attr|merge({'for': id}) %}
+    {%- endif -%}
+    {% if required -%}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+    {%- endif -%}
+    {% if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ translation_domain is same as(false) ? label | raw : label|trans({}, translation_domain) | raw }} {% if icon is defined %} <span class="{{ icon }}"></span>{% endif %}
+    {% if form.vars.attr.help is defined %}
+        <span class="fa fa-question-circle" data-toggle="tooltip" title="{{ form.vars.attr.help }}"></span>
+    {% endif %}</label>
+    
+{%- endif -%}
+{%- endblock form_label -%}
+
+
+{% block choice_label -%}
+    {# remove the checkbox-inline and radio-inline class, it's only useful for embed labels #}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default('')|replace({'checkbox-inline': '', 'radio-inline': ''})|trim}) -%}
+    {{- block('form_label') -}}
+{% endblock %}
+
+{% block checkbox_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock checkbox_label %}
+
+{% block radio_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock radio_label %}
+
+{% block checkbox_radio_label %}
+    {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+    {% if widget is defined %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if parent_label_class is defined %}
+            {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) %}
+        {% endif %}
+        {% if label is not same as(false) and label is empty %}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{- widget|raw }} {{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}
+            {% if form.vars.attr.help is defined %}
+                <span class="fa fa-question-circle" data-toggle="tooltip" title="{{ form.vars.attr.help }}"></span>
+            {% endif %}</label>
+        </label>
+    {% endif %}
+{% endblock checkbox_radio_label %}
+
+{# Rows #}
+
+{% block form_row -%}
+    {% if formGroup is not defined %}
+        {% set formGroup = true %}
+    {% endif %}
+    <div class="{{ formGroup ? 'form-group' : '' }}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}{% if floatLabel is defined %} has-float-label{% endif %}{% if smallLabel is defined %} has-small-label{% endif %}">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row %}
+
+{% block button_row -%}
+    <div class="form-group">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}
+
+{% block choice_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock choice_row %}
+
+{% block date_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock date_row %}
+
+{% block time_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock time_row %}
+
+{% block datetime_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock datetime_row %}
+
+{% block checkbox_row -%}
+    <div class="form-group{% if not valid %} has-error{% endif %}">
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row %}
+
+{% block radio_row -%}
+    <div class="form-group{% if not valid %} has-error{% endif %}">
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock radio_row %}
+
+{# Errors #}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+    {% if form.parent %}<span class="help-block text-danger">{% else %}<div class="alert alert-danger">{% endif %}
+    <ul class="list-unstyled">
+        {%- for error in errors -%}
+            <li><span class="fa fa-exclamation-triangle"></span> {{ error.message }}</li>
+        {%- endfor -%}
+    </ul>
+    {% if form.parent %}</span>{% else %}</div>{% endif %}
+    {%- endif %}
+{%- endblock form_errors %}
+
+
+{% block filter_date_range_widget %}
+    <div class="filter-date-range">
+        <div class="row">
+            <div class="col-md-6">{{ form_row(form.left_date, {'attr': attr, 'label' : false}) }}</div>
+            <div class="col-md-6">{{ form_row(form.right_date, {'attr': attr, 'label' : false}) }}</div>
+        </div>
+    </div>
+{% endblock filter_date_range_widget %}
+
+
+{% block filter_number_range_widget %}
+    <div class="filter-date-range">
+        <div class="input-group">
+          <span class="input-group-addon">Entre</span>
+          {{ form_widget(form.left_number, { 'attr': attr | merge({ 'style':'margin-left:-1px' }) }) }}
+          <span class="input-group-addon" style="position:relative; left:-3px">Et</span>
+          {{ form_widget(form.right_number, { 'attr': attr  | merge({ 'style':'margin-left:-4px' }) }) }}
+        </div>
+    </div>
+{% endblock filter_number_range_widget %}
+
+{% block core_upload_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    {% if value %}
+        {% if value.id %}
+            <div class="input-group">
+                {% if granted %}
+                    <span class="input-group-addon"><span class="fa fa-file"></span></span>
+                    {{ form_widget(form.file, { attr: attr|merge({ class : 'hide' })}) }}
+                    <label for="{{ form.file.vars.id }}" class="form-control file-label">Remplacer...</label>
+                    {# {{ form_widget(form.delete) }} #}
+                    {# <span class="input-group-addon util-tooltip" title="Cocher la case pour supprimer">
+                        <span class="fa fa-trash-o"></span> <input type="checkbox" onclick="$(this).parent().prev().val($(this).is(':checked'));">
+                    </span> #}
+                {% endif %}
+                <span class="input-group-addon btn btn-primary">
+                    <a target="_blank" href="{{ path('upload_view', { id : value.id }) }}"><span class="fa fa-eye"></span> {{ value.title }}</a>
+                </span>
+            </div>
+        {% else %}
+            <div class="input-group">
+                <span class="input-group-addon"><span class="fa fa-file"></span></span>
+                <input type="file" id="{{ form.file.vars.id }}" name="{{ form.file.vars.full_name }}" class="form-control">
+                {# {{ form_widget(form.file, { attr: attr|merge({ class : 'form-control' })}) }} #}
+                {# {{ form_widget(form.delete) }} #}
+            </div>
+        {% endif %}
+    {% else %}
+        {% if granted %}
+            <div class="input-group">
+                <span class="input-group-addon"><span class="fa fa-file"></span></span>
+                <input type="file" id="{{ form.file.vars.id }}" name="{{ form.file.vars.full_name }}" class="form-control">
+                {# {{ form_widget(form.file, { attr: attr|merge({ class : 'form-control' })}) }} #}
+                {# {{ form_widget(form.delete) }} #}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+
+{% block google_autocomplete_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    <div class="input-group">
+        <span class="add-on input-group-addon"><i class="fa fa-map"></i></span>
+        <input type="text" class="form-control util-google-autocomplete" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    </div>
+{% endblock %}
+
+{% block month_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    <div class="input-group form_datetime input-prepend date util-monthpicker">
+        <span class="add-on input-group-addon"><i class="fa fa-calendar icon-th"></i></span>
+        <input type="text" class="form-control" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    </div>
+{% endblock %}
+
+{% block text_addon_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    <div class="input-group">
+        {% if before is not null %}
+            <span class="input-group-addon">{{ before }}</span>
+        {% endif %}
+        <input type="text" class="form-control" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        {% if after is not null %}
+            <span class="input-group-addon">{{ after }}</span>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block number_addon_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    <div class="input-group">
+        {% if before is not null %}
+            <span class="input-group-addon">{{ before }}</span>
+        {% endif %}
+        <input type="number" class="{{ attr.class }}" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        {% if after is not null %}
+            <span class="input-group-addon">{{ after }}</span>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block number_widget %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    <input type="number" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value | replace({ ',' : '.' }) }}" {% endif %}/>
+{% endblock %}
+
+{% block color_picker_widget %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    <div class="input-group util-colorpicker">
+        <input type="text" class="{{ attr.class }}" autocomplete="off" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        <span class="input-group-addon"><i></i></span>
+    </div>
+{% endblock %}
+
+
+{% block signature_row %}
+    {% set granted = false %}
+    {% if roles is defined %}
+        {% for role in roles %}
+            {% if is_granted(role) == 1 %}
+                {% set granted = true %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set granted = true %}
+    {% endif %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    <fieldset class="util-signature">
+        <legend>{{ form.vars.label }}</legend>
+        <div class="legend-actions">
+            <button type="button" class="btn btn-embossed btn-danger btn-xs util-signature-delete {{ not form.vars.value ? 'hide' : '' }}"><span class="fa fa-ban"></span> RÉINITIALISER</button>
+            <button type="button" class="btn btn-embossed btn-blue util-signature-add {{ form.vars.value ? 'hide' : '' }}"><span class="fa fa-pencil"></span> SIGNER</button>
+        </div>
+        <div class="util-signature-lightbox hide">
+            <div>
+                <div class="util-signature-jsignature"></div><br />
+                <button type="button" class="btn btn-success btn-embossed util-signature-validate"><span class="fa fa-check"></span> VALIDER</button>
+            </div>
+        </div>
+        {{ form_widget(form) }}
+        <div class="util-signature-holder px-20 align-center">
+            <img class="img-responsive {{ form.vars.value ? '' : 'hide' }}" style="margin:0 auto;" src="data:{{ form.vars.value }}" alt="">
+        </div>
+    </fieldset>
+{% endblock %}
+
+{% block text_data_list_widget %}
+    {% set attr = attr|merge({list: id ~ '_list'}) -%}
+    {{- block('form_widget_simple') -}}
+    <datalist id="{{ id }}_list">
+        {% for choice in choices %}
+            <option value="{{ choice }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}

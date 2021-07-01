@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Formations{% endblock %}
+
+{% block header %}
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Liste des Formations</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('index') }}">
+                            <i class="feather icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Liste des Formations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fa fa-graduation-cap"></i> Liste des Formations</h5>
+            <a href="{# {{ path('formation_new') }} #}" class="btn btn-mat btn-primary f-right"> <i class="fa fa-plus"></i> Ajouter</a>
+        </div>
+        <div class="card-block table-border-style">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Titre</th>
+                            <th>Date</th>
+                            <th style="width:5%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for formation in formations %}
+                        <tr>
+                            <td>{{ formation.id }}</td>
+                            <td>{{ formation.title }}</td>
+                            <td>{{ formation.title }}</td>
+                            {# <td>{{ formation.date }}</td> #}
+                            <td class="icon-btn">
+                                {% if formation.enabled is defined %}
+                                    <a href="{# {{ path('formation_toggle', {'id': formation.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Désactiver" class="btn btn-info btn-mat btn-mini"><i class="fa fa-toggle-on"></i></a>
+                                {% else %}
+                                    <a href="{# {{ path('formation_toggle', {'id': formation.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Activer" class="btn btn-warning btn-mat btn-mini"><i class="fa fa-toggle-off"></i></a>
+                                {% endif %}
+                                <a href="{# {{ path('formation_edit', {'id': formation.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Éditer" class="btn btn-primary btn-mat btn-mini"><i class="icofont icofont-ui-edit"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Aucune formation dans la base de donnée</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

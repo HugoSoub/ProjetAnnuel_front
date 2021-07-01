@@ -1,0 +1,31 @@
+.nav-tabs .slide-4 {
+    width: calc(100% / 4) !important;
+}
+
+.nav-tabs .slide-3 {
+    width: calc(100% / 3) !important;
+}
+
+.nav-tabs .slide-2 {
+    width: calc(100% / 2) !important;
+}
+
+.nav-tabs .slide-1 {
+    width: 100% !important;
+}
+
+.hide {
+    display: none;
+}
+
+.input-group-addon.btn a {
+    color: white;
+}
+
+.input-group {
+    margin-bottom: 0;
+}
+
+.datetimepicker.dropdown-menu {
+    z-index: 2147483647 !important;
+}
