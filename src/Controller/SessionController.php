@@ -75,6 +75,53 @@ class SessionController extends AbstractController
     }
 
     /**
+     * @Route("/session/edit/{id}", name="session_edit")
+     */
+    public function editSession(Request $request, $id)
+    {
+        $session_formation = $this->client->request('GET', $this->getParameter('api_url') . 'session_formations/session/' . $id)->toArray()[0];
+        $formation_id =  $session_formation['id_formation'];
+        $session = new Session();
+
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'formations');
+
+        $formations = [];
+        if ($response->getStatusCode() == 200) {
+            foreach ($response->toArray() as $object) {
+                $formation = new Formation();
+                $formation->setId($object['id'])
+                          ->setName($object['name']);
+                $formations[] = $formation;
+                if ($formation->getId() == $formation_id) {
+                    $session->setFormation($formation);
+                }
+            }
+        }
+
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'sessions/' . $id)->toArray()[0];
+
+        $session->setId($response['id'])
+                ->setName($response['name'])
+                ->setStatus($response['status']);
+
+        $form = $this->createForm(SessionType::class, $session, ['formations' => $formations]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $response = $this->client->request('PUT', $this->getParameter('api_url') . 'sessions/' . $id, [
+                'json' => [
+                    'name' => $session->getName(),
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return $this->redirectToRoute('session');
+            }
+        }
+
+        return $this->render('session/edit.html.twig', [ 'form' => $form->createView(), 'session' => $session ]);
+    }
+
+    /**
      * @Route("/session/{id}/remove", name="session_remove")
      */
     public function removeSession($id)

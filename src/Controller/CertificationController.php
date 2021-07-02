@@ -59,6 +59,36 @@ class CertificationController extends AbstractController
     }
 
     /**
+     * @Route("/certification/edit/{id}", name="certification_edit")
+     */
+    public function editCertification(Request $request, $id)
+    {
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'certifications/' . $id)->toArray()[0];
+
+        $certification = new Certification();
+        $certification->setId($response['id'])
+             ->setName($response['name'])
+             ->setDescription($response['description']);
+
+        $form = $this->createForm(CertificationType::class, $certification);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $response = $this->client->request('PUT', $this->getParameter('api_url') . 'certifications/' . $id, [
+                'json' => [
+                    'name' => $certification->getName(),
+                    'description' => $certification->getDescription()
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return $this->redirectToRoute('certification');
+            }
+        }
+
+        return $this->render('certification/edit.html.twig', [ 'form' => $form->createView(), 'certification' => $certification ]);
+    }
+
+    /**
      * @Route("/certification/{id}/remove", name="certification_remove")
      */
     public function removeCertification($id)

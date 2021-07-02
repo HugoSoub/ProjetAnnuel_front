@@ -74,6 +74,52 @@ class FormationController extends AbstractController
     }
 
     /**
+     * @Route("/formation/edit/{id}", name="formation_edit")
+     */
+    public function editFormation(Request $request, $id)
+    {
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'formations/' . $id)->toArray()[0];
+        $certification_id =  $response['id_certification'];
+
+        $formation = new Formation();
+        $formation->setId($response['id'])
+                  ->setName($response['name']);
+
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'certifications');
+
+        $certifications = [];
+        if ($response->getStatusCode() == 200) {
+            foreach ($response->toArray() as $object) {
+                $certification = new Certification();
+                $certification->setId($object['id'])
+                              ->setName($object['name'])
+                              ->setDescription($object['description']);
+                $certifications[] = $certification;
+                if ($certification->getId() == $certification_id) {
+                    $formation->setCertification($certification);
+                }
+            }
+        }
+
+        $form = $this->createForm(FormationType::class, $formation, ['certifications' => $certifications]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $response = $this->client->request('PUT', $this->getParameter('api_url') . 'formations/' . $id, [
+                'json' => [
+                    'name' => $formation->getName(),
+                    'id_certification' => $formation->getCertification()->getId()
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return $this->redirectToRoute('formation');
+            }
+        }
+
+        return $this->render('formation/edit.html.twig', [ 'form' => $form->createView(), 'formation' => $formation ]);
+    }
+
+    /**
      * @Route("/formation/{id}/remove", name="formation_remove")
      */
     public function removeFormation($id)

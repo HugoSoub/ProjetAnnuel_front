@@ -49,7 +49,7 @@
                             <td>{{ formation.name }}</td>
                             <td class="icon-btn">
                                 <a href="{{ path('formation_remove', {'id': formation.id}) }}" data-toggle="tooltip" data-placement="top" title="Supprimer" class="btn btn-danger btn-mat btn-mini"><i class="icofont icofont-ui-delete"></i></a>
-                                <a href="{# {{ path('formation_edit', {'id': formation.id}) }} #}" data-toggle="tooltip" data-placement="top" title="Éditer" class="btn btn-primary btn-mat btn-mini"><i class="icofont icofont-ui-edit"></i></a>
+                                <a href="{{ path('formation_edit', {'id': formation.id}) }}" data-toggle="tooltip" data-placement="top" title="Éditer" class="btn btn-primary btn-mat btn-mini"><i class="icofont icofont-ui-edit"></i></a>
                             </td>
                         </tr>
                     {% else %}

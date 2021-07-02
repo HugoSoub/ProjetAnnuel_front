@@ -41,6 +41,13 @@ class User
         return $this->id;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -63,6 +70,10 @@ class User
         $this->firstname = $firstname;
 
         return $this;
+    }
+
+    public function getFullname() {
+        return $this->name . ' ' . $this->firstname;
     }
 
     public function getEmail(): ?string

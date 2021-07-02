@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Édition #{{ session.id }} - {{ session.name }}{% endblock %}
+
+{% block header %}
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Édition #{{ session.id }} - {{ session.name }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('index') }}">
+                            <i class="feather icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item"><a href="{{ path('session') }}">Liste des Sessions</a></li>
+                    <li class="breadcrumb-item">Édition #{{ session.id }} - {{ session.name }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Édition #{{ session.id }} - {{ session.name }}</h5>
+            <div class="float-right">
+                <a href="{{ path('session') }}" class="btn btn-mat btn-info"><i class="fa fa-chevron-left"></i>Retour</a>
+                <button class="btn btn-mat btn-success" onclick="document.forms['session'].submit();"><i class="fa fa-save"></i>Sauvegarder</button>
+                <a data-toggle="confirm" href="{{ path('session_remove', { id : session.id }) }}" class="btn btn-mat btn-danger"><i class="fa fa-trash"></i>Supprimer</a>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-sm-12">
+                    {{ include('session/_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

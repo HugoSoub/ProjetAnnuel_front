@@ -80,6 +80,40 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/user/edit/{id}", name="user_edit")
+     */
+    public function editUser(Request $request, $id)
+    {
+        $response = $this->client->request('GET', $this->getParameter('api_url') . 'users/' . $id)->toArray()[0];
+
+        $user = new User();
+        $user->setId($response['id'])
+             ->setName($response['name'])
+             ->setFirstname($response['firstname'])
+             ->setEmail($response['email'])
+             ->setRoles(json_decode($response['roles']));
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $response = $this->client->request('PUT', $this->getParameter('api_url') . 'users/' . $id, [
+                'json' => [
+                    'name' => $user->getName(),
+                    'firstname' => $user->getFirstname(),
+                    'email' => $user->getEmail(),
+                    'roles' => json_encode($user->getRoles())
+                ]
+            ]);
+            if ($response->getStatusCode() == 200) {
+                return $this->redirectToRoute('user');
+            }
+        }
+
+        return $this->render('user/edit.html.twig', [ 'form' => $form->createView(), 'user' => $user ]);
+    }
+
+    /**
      * @Route("/user/{id}/remove", name="user_remove")
      */
     public function removeUser($id)
