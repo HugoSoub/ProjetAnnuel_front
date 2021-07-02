@@ -34,6 +34,7 @@ class UserType extends AbstractType
                     'Coach' => 'Coach',
                     'Expert' => 'Expert'
                 ],
+                'attr' => ['class' => 'js-select2'],
                 'multiple' => true,
                 'required' => false,
             ])

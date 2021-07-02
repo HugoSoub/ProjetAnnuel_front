@@ -48,3 +48,7 @@
     background-color: #81a9ff !important;
     border-color: #81a9ff !important;
 }
+
+.select2-container.select2-container--open {
+    z-index: 2147483647 !important;
+}

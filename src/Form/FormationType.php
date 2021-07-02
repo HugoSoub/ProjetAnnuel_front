@@ -22,6 +22,7 @@ class FormationType extends AbstractType
                 'label' => 'Certifications',
                 'choices' => $options['certifications'],
                 'choice_label' => 'name',
+                'attr' => ['class' => 'js-select2'],
                 'required' => false,
             ])
         ;

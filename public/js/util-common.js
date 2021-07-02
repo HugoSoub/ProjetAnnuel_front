@@ -32,13 +32,20 @@ $('body').on('click', '.js-add-user-session', function() {
 
         Swal.fire({
             title: "Ajouter un nouveau candidat",
-            input: 'select',
-            inputPlaceholder: 'Sélectionnez un candidat',
-            inputOptions: users,
+            // input: 'select',
+            // inputPlaceholder: 'Sélectionnez un candidat',
+            // inputOptions: users,
+            // inputAttributes: {
+            //     'id': 'js-select2'
+            // },
+            html:'<select class="swal2-select js-select2" style="display: flex;"><option value="" disabled="">Sélectionnez un candidat</option><option value="8">DuJardin mireille</option><option value="9">LoupeSonTir Kylian</option><option value="10">Poutre gerard</option></select>',
             showCancelButton: true,
             closeOnConfirm: false,
             showLoaderOnConfirm: true,
-            allowOutsideClick: () => !Swal.isLoading()
+            allowOutsideClick: () => !Swal.isLoading(),
+            didOpen: () => {
+                $(".js-select2").select2();
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -50,3 +57,7 @@ $('body').on('click', '.js-add-user-session', function() {
         });
     });
 })
+
+
+
+$(".js-select2").select2();

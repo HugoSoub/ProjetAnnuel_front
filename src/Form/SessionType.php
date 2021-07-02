@@ -22,6 +22,7 @@ class SessionType extends AbstractType
                 'label' => 'Formations',
                 'choices' => $options['formations'],
                 'choice_label' => 'name',
+                'attr' => ['class' => 'js-select2'],
                 'required' => false,
             ])
         ;
