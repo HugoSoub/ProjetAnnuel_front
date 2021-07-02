@@ -14,7 +14,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h5>{{ session.name }}</h5>
-                                <button data-id="{{ session.id }}"class="btn btn-mat btn-primary btn-mini f-right js-add-user-session"> <i class="fa fa-plus"></i> Ajouter un candidat</button>
+                                <button data-id="{{ session.id }}" class="btn btn-mat btn-primary btn-mini f-right js-add-user-session"> <i class="fa fa-plus"></i> Ajouter un candidat</button>
                                 <span>{{ session.users | length }} / 30 participant(s)</span>
                             </div>
                             <div class="card-block">
@@ -23,7 +23,7 @@
                                         {% if session_formation.id_formation | length %}
                                             <div class="row js-events">
                                                 <div class="col-md-8">
-                                                    <div data-id="{{ session_formation.id }}" class="fc-event {% if session_formation.date == null %}formations{% else %}formation-selected{% endif %} ui-draggable ui-draggable-handle">{{ session_formation.id_formation.0.name }}</div>
+                                                    <div data-id="{{ session_formation.id }}" data-session="{{ session.name }}" data-candidate="{{ session.users | length }} / 30 candidat(s)" class="fc-event {% if session_formation.date == null %}formations{% else %}formation-selected{% endif %} ui-draggable ui-draggable-handle">{{ session_formation.id_formation.0.name }}</div>
                                                 </div>
                                                 <div class="col-md-4 js-events-date">
                                                     {% if session_formation.date != null %}{{ session_formation.date | date("d/m/Y") }}{% else %}Non attribué{% endif %}

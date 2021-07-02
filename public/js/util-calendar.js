@@ -2,7 +2,7 @@
 jQuery(function ($) {
 	$('#external-events .fc-event.formations').each(function() {
 		$(this).data('event', {
-			title: $.trim($(this).text()),
+			title: $(this).data('session') + '<br />' + $(this).data('candidate') + '<br /><br /> ' + $(this).text(),
 			stick: true,
 			borderColor: $(this).css("border-color"),
 			backgroundColor: $(this).css("background-color"),
@@ -55,6 +55,10 @@ jQuery(function ($) {
 					data: { 'date' : event.start.format() },
 					success: function(result) {}
 				});
+			},
+			eventRender: function(event, element, view) {   
+				element.find('span.fc-title').html(element.find('span.fc-title').text());                   
+			
 			},
 			dayClick: function (date, jsEvent, view) {
 				Swal.fire({

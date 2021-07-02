@@ -40,10 +40,12 @@ class CalendarController extends AbstractController
         $result = [];
         foreach ($session_formations as $session_formation) {
             $formation = $this->client->request('GET', $this->getParameter('api_url') . 'formations/' . $session_formation['id_formation'])->toArray();
+            $session = $this->client->request('GET', $this->getParameter('api_url') . 'sessions/' . $session_formation['id_session'])->toArray();
+            $users = $this->client->request('GET', $this->getParameter('api_url') . 'user_sessions/session/' . $session[0]['id'])->toArray();
 
             $result[] = [
                 'id' => $session_formation['id'],
-                'title' => $formation[0]['name'],
+                'title' => $session[0]['name'] . ' <br />' . count($users) . ' / 30 candidat(s)' . ' <br /><br /> ' . $formation[0]['name'],
                 'start' => date('Y-m-d', strtotime($session_formation['date'] . ' +1 day')),
                 'borderColor' => '#4680ff',
                 'backgroundColor' => '#4680ff',
